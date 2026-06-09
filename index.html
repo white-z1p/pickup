@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>공구 픽업 달력</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="month-nav">
+      <button class="nav-btn" id="prev-btn">&#8249;</button>
+      <span class="month-title" id="month-title"></span>
+      <button class="nav-btn" id="next-btn">&#8250;</button>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="dot dot-me"></div>내 계정</div>
+      <div class="legend-item"><div class="dot dot-mom"></div>엄마 계정</div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="cal-grid" id="cal-grid"></div>
+
+  <!-- Detail Panel -->
+  <div class="wrapper" id="detail-wrapper">
+    <div class="detail-panel">
+      <div class="detail-header">
+        <span class="detail-date" id="detail-date">날짜를 선택해주세요</span>
+        <button class="add-btn" id="add-btn" style="display:none;">
+          + 항목 추가
+        </button>
+      </div>
+      <div id="items-list" class="items-list"></div>
+      <div id="summary-row" class="summary-row" style="display:none;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Firebase SDK -->
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
