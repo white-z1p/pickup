@@ -580,3 +580,127 @@ body {
   color: #D85A30;
   font-size: 11px;
 }
+/* ── Inline Form (redesigned) ── */
+.inline-form {
+  margin-top: 12px;
+  background: #fafaf8;
+  border: 1px solid #e4e0db;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: formSlideIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes formSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.inline-form-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  letter-spacing: -0.01em;
+}
+
+.inline-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.inline-form-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.inline-form-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e4e0db;
+  border-radius: 10px;
+  font-size: 14px;
+  background: #fff;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+
+.inline-form-input:focus {
+  border-color: #D85A30;
+  box-shadow: 0 0 0 3px rgba(216, 90, 48, 0.1);
+}
+
+.inline-form-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inline-form-input-wrap .inline-form-input {
+  padding-right: 28px;
+}
+
+.inline-form-unit {
+  position: absolute;
+  right: 11px;
+  font-size: 13px;
+  color: #aaa;
+  pointer-events: none;
+}
+
+.inline-form-row {
+  display: flex;
+  gap: 10px;
+}
+
+/* 계정 토글 */
+.acct-toggle {
+  display: flex;
+  gap: 8px;
+  transition: outline 0.15s;
+}
+
+.acct-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid #e4e0db;
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.acct-btn[data-val="me"].active {
+  background: #FAECE7;
+  border-color: #D85A30;
+  color: #993C1D;
+}
+
+.acct-btn[data-val="mom"].active {
+  background: #E6F1FB;
+  border-color: #185FA5;
+  color: #185FA5;
+}
+
+.acct-btn:not(.active):hover {
+  background: #f5f4f2;
+  border-color: #ccc;
+}
+
+/* 폼 하단 버튼 */
+.inline-form-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}

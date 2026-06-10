@@ -230,7 +230,6 @@ function openAddForm() {
   // 이미 폼 열려있으면 무시
   if (document.getElementById('inline-form')) return;
 
-  const listEl = document.getElementById('items-list');
   const addBtn = document.getElementById('add-btn');
   addBtn.style.display = 'none';
 
@@ -238,24 +237,52 @@ function openAddForm() {
   formEl.id = 'inline-form';
   formEl.className = 'inline-form';
   formEl.innerHTML = `
-    <input type="text" id="f-name" placeholder="물건 이름" />
-    <div class="inline-form-row">
-      <input type="number" id="f-qty" placeholder="개수" min="1" />
-      <input type="number" id="f-price" placeholder="금액 (원)" />
+    <div class="inline-form-title">새 픽업 항목</div>
+    <div class="inline-form-field">
+      <label class="inline-form-label">물건 이름</label>
+      <input type="text" id="f-name" class="inline-form-input" placeholder="예) 코튼 티셔츠" />
     </div>
-    <select id="f-acct">
-      <option value="" disabled selected>계정 선택</option>
-      <option value="me">내 계정</option>
-      <option value="mom">엄마 계정</option>
-    </select>
+    <div class="inline-form-row">
+      <div class="inline-form-field">
+        <label class="inline-form-label">수량</label>
+        <input type="number" id="f-qty" class="inline-form-input" placeholder="1" min="1" />
+      </div>
+      <div class="inline-form-field">
+        <label class="inline-form-label">금액</label>
+        <div class="inline-form-input-wrap">
+          <input type="number" id="f-price" class="inline-form-input" placeholder="0" />
+          <span class="inline-form-unit">원</span>
+        </div>
+      </div>
+    </div>
+    <div class="inline-form-field">
+      <label class="inline-form-label">계정</label>
+      <div class="acct-toggle">
+        <button type="button" class="acct-btn" data-val="me">내 계정</button>
+        <button type="button" class="acct-btn" data-val="mom">엄마 계정</button>
+      </div>
+      <input type="hidden" id="f-acct" value="" />
+    </div>
     <div class="inline-form-btns">
       <button class="btn-cancel" id="f-cancel">취소</button>
-      <button class="btn-save" id="f-save">저장</button>
+      <button class="btn-save" id="f-save">
+        <span>저장하기</span>
+      </button>
     </div>
   `;
 
   const sheetInner = document.getElementById('detail-wrapper');
   sheetInner.appendChild(formEl);
+
+  // 계정 토글 버튼
+  formEl.querySelectorAll('.acct-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      formEl.querySelectorAll('.acct-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('f-acct').value = btn.dataset.val;
+    });
+  });
+
   document.getElementById('f-name').focus();
 
   function closeForm() {
@@ -274,7 +301,12 @@ function openAddForm() {
     if (!name)           { document.getElementById('f-name').focus();  return; }
     if (!qty || qty < 1) { document.getElementById('f-qty').focus();   return; }
     if (isNaN(price))    { document.getElementById('f-price').focus(); return; }
-    if (!acct)           { document.getElementById('f-acct').focus();  return; }
+    if (!acct) {
+      formEl.querySelector('.acct-toggle').style.outline = '2px solid #D85A30';
+      formEl.querySelector('.acct-toggle').style.borderRadius = '10px';
+      setTimeout(() => { formEl.querySelector('.acct-toggle').style.outline = ''; }, 1500);
+      return;
+    }
 
     const saveBtn = document.getElementById('f-save');
     saveBtn.textContent = '저장 중...';
