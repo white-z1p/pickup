@@ -226,61 +226,44 @@ async function deleteItem(key, idx) {
 
 function openAddForm() {
   if (!selectedDate) return;
-  const wrapper = document.getElementById('detail-wrapper');
 
-  const overlay = document.createElement('div');
-  overlay.className = 'form-overlay';
-  overlay.innerHTML = `
-    <div class="form-card">
-      <div class="form-title">픽업 항목 추가</div>
-      <div class="form-row">
-        <label class="form-label" for="f-name">물건 이름 <span class="req">*</span></label>
-        <input type="text" id="f-name" placeholder="예: 세제, 과자 세트" />
-      </div>
-      <div class="form-row">
-        <label class="form-label" for="f-qty">개수 <span class="req">*</span></label>
-        <input type="number" id="f-qty" placeholder="예: 2" min="1" />
-      </div>
-      <div class="form-row">
-        <label class="form-label" for="f-price">금액 (원) <span class="req">*</span></label>
-        <input type="number" id="f-price" placeholder="예: 15000" />
-      </div>
-      <div class="form-row">
-        <label class="form-label" for="f-acct">예약 계정 <span class="req">*</span></label>
-        <select id="f-acct">
-          <option value="" disabled selected>계정을 선택하세요</option>
-          <option value="me">내 계정</option>
-          <option value="mom">엄마 계정</option>
-        </select>
-      </div>
-      <div class="form-btns">
-        <button class="btn-cancel" id="f-cancel">취소</button>
-        <button class="btn-save" id="f-save">저장</button>
-      </div>
+  // 이미 폼 열려있으면 무시
+  if (document.getElementById('inline-form')) return;
+
+  const listEl = document.getElementById('items-list');
+  const addBtn = document.getElementById('add-btn');
+  addBtn.style.display = 'none';
+
+  const formEl = document.createElement('div');
+  formEl.id = 'inline-form';
+  formEl.className = 'inline-form';
+  formEl.innerHTML = `
+    <input type="text" id="f-name" placeholder="물건 이름" />
+    <div class="inline-form-row">
+      <input type="number" id="f-qty" placeholder="개수" min="1" />
+      <input type="number" id="f-price" placeholder="금액 (원)" />
+    </div>
+    <select id="f-acct">
+      <option value="" disabled selected>계정 선택</option>
+      <option value="me">내 계정</option>
+      <option value="mom">엄마 계정</option>
+    </select>
+    <div class="inline-form-btns">
+      <button class="btn-cancel" id="f-cancel">취소</button>
+      <button class="btn-save" id="f-save">저장</button>
     </div>
   `;
-  wrapper.appendChild(overlay);
+
+  const sheetInner = document.getElementById('detail-wrapper');
+  sheetInner.appendChild(formEl);
   document.getElementById('f-name').focus();
 
-  document.getElementById('f-cancel').addEventListener('click', () => {
-    overlay.remove();
-    if (window.visualViewport) {
-      window.visualViewport.removeEventListener('resize', adjustPosition);
-    }
-  });
-
-  // iOS 키보드 대응
-  function adjustPosition() {
-    const viewport = window.visualViewport;
-    if (!viewport) return;
-    const offsetY = window.innerHeight - viewport.height - viewport.offsetTop;
-    overlay.style.transform = `translateY(-${offsetY}px)`;
+  function closeForm() {
+    formEl.remove();
+    addBtn.style.display = 'flex';
   }
 
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', adjustPosition);
-    window.visualViewport.addEventListener('scroll', adjustPosition);
-  }
+  document.getElementById('f-cancel').addEventListener('click', closeForm);
 
   document.getElementById('f-save').addEventListener('click', async () => {
     const name  = document.getElementById('f-name').value.trim();
@@ -288,19 +271,18 @@ function openAddForm() {
     const price = parseInt(document.getElementById('f-price').value);
     const acct  = document.getElementById('f-acct').value;
 
-    if (!name)        { document.getElementById('f-name').focus();  return; }
+    if (!name)           { document.getElementById('f-name').focus();  return; }
     if (!qty || qty < 1) { document.getElementById('f-qty').focus();   return; }
-    if (!price && price !== 0) { document.getElementById('f-price').focus(); return; }
-    if (isNaN(price)) { document.getElementById('f-price').focus(); return; }
-    if (!acct)        { document.getElementById('f-acct').focus();  return; }
+    if (isNaN(price))    { document.getElementById('f-price').focus(); return; }
+    if (!acct)           { document.getElementById('f-acct').focus();  return; }
 
     const saveBtn = document.getElementById('f-save');
     saveBtn.textContent = '저장 중...';
-    saveBtn.disabled    = true;
+    saveBtn.disabled = true;
 
     const existing = data[selectedDate] || [];
     await saveDate(selectedDate, [...existing, { name, qty, price, acct, done: false }]);
-    overlay.remove();
+    closeForm();
   });
 }
 

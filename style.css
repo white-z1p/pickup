@@ -377,12 +377,11 @@ body {
   padding: 8px 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   background: #fff;
   color: #1a1a1a;
   outline: none;
   transition: border-color 0.15s;
-  -webkit-text-size-adjust: 100%;
 }
 
 .form-row input:focus,
@@ -565,4 +564,54 @@ body {
 .req {
   color: #D85A30;
   font-size: 11px;
+}
+/* ── Inline Form ── */
+.inline-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  background: #f8f7f4;
+  border-radius: 12px;
+  margin-top: 8px;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.inline-form input,
+.inline-form select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background: #fff;
+  color: #1a1a1a;
+  outline: none;
+  transition: border-color 0.15s;
+  -webkit-text-size-adjust: 100%;
+}
+
+.inline-form input:focus,
+.inline-form select:focus {
+  border-color: #D85A30;
+}
+
+.inline-form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.inline-form-row input {
+  flex: 1;
+}
+
+.inline-form-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
 }
