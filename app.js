@@ -230,23 +230,23 @@ function openAddForm() {
 
   const overlay = document.createElement('div');
   overlay.className = 'form-overlay';
-    overlay.innerHTML = `
+  overlay.innerHTML = `
     <div class="form-card">
       <div class="form-title">픽업 항목 추가</div>
       <div class="form-row">
-        <label class="form-label" for="f-name">물건 이름</label>
+        <label class="form-label" for="f-name">물건 이름 <span class="req">*</span></label>
         <input type="text" id="f-name" placeholder="예: 세제, 과자 세트" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-qty">개수</label>
+        <label class="form-label" for="f-qty">개수 <span class="req">*</span></label>
         <input type="number" id="f-qty" placeholder="예: 2" min="1" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-price">금액 (원)</label>
+        <label class="form-label" for="f-price">금액 (원) <span class="req">*</span></label>
         <input type="number" id="f-price" placeholder="예: 15000" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-acct">예약 계정</label>
+        <label class="form-label" for="f-acct">예약 계정 <span class="req">*</span></label>
         <select id="f-acct">
           <option value="" disabled selected>계정을 선택하세요</option>
           <option value="me">내 계정</option>
@@ -262,7 +262,25 @@ function openAddForm() {
   wrapper.appendChild(overlay);
   document.getElementById('f-name').focus();
 
-  document.getElementById('f-cancel').addEventListener('click', () => overlay.remove());
+  document.getElementById('f-cancel').addEventListener('click', () => {
+    overlay.remove();
+    if (window.visualViewport) {
+      window.visualViewport.removeEventListener('resize', adjustPosition);
+    }
+  });
+
+  // iOS 키보드 대응
+  function adjustPosition() {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    const offsetY = window.innerHeight - viewport.height - viewport.offsetTop;
+    overlay.style.transform = `translateY(-${offsetY}px)`;
+  }
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', adjustPosition);
+    window.visualViewport.addEventListener('scroll', adjustPosition);
+  }
 
   document.getElementById('f-save').addEventListener('click', async () => {
     const name  = document.getElementById('f-name').value.trim();
