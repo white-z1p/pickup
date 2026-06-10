@@ -38,20 +38,20 @@
   <!-- Calendar -->
   <div class="cal-grid" id="cal-grid"></div>
 
-  <!-- Detail Panel -->
-  <div class="wrapper" id="detail-wrapper">
-    <div class="detail-panel">
-      <div class="detail-header">
-        <span class="detail-date" id="detail-date">날짜를 선택해주세요</span>
-        <button class="add-btn" id="add-btn" style="display:none;">
-          + 항목 추가
-        </button>
-      </div>
-      <div id="items-list" class="items-list"></div>
-      <div id="summary-row" class="summary-row" style="display:none;"></div>
-    </div>
-  </div>
+</div>
 
+<!-- Bottom Sheet -->
+<div class="sheet-backdrop" id="sheet-backdrop"></div>
+<div class="bottom-sheet" id="bottom-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-inner" id="detail-wrapper">
+    <div class="detail-header">
+      <span class="detail-date" id="detail-date"></span>
+      <button class="add-btn" id="add-btn">+ 항목 추가</button>
+    </div>
+    <div id="items-list" class="items-list"></div>
+    <div id="summary-row" class="summary-row" style="display:none;"></div>
+  </div>
 </div>
 
 <!-- Firebase SDK -->

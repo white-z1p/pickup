@@ -53,10 +53,25 @@ function makeDateKey(y, m, d) {
   return `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
 }
 
+/* ── Bottom Sheet ── */
+function openSheet() {
+  document.getElementById('bottom-sheet').classList.add('open');
+  document.getElementById('sheet-backdrop').classList.add('open');
+}
+
+function closeSheet() {
+  document.getElementById('bottom-sheet').classList.remove('open');
+  document.getElementById('sheet-backdrop').classList.remove('open');
+  selectedDate = null;
+  renderCalendar();
+}
+
+document.getElementById('sheet-backdrop').addEventListener('click', closeSheet);
+
 /* ── Render ── */
 function render() {
   renderCalendar();
-  renderDetail();
+  if (selectedDate) renderDetail();
 }
 
 function renderCalendar() {
@@ -96,17 +111,16 @@ function renderCalendar() {
     if (selectedDate === key)
       el.classList.add('selected');
 
-    const tags = items.slice(0, 2).map(item => {
-      const cls = item.acct === 'me' ? 'tag-me' : 'tag-mom';
-      const done = item.done ? 'tag-done' : '';
-      return `<div class="day-tag ${cls} ${done}">${item.name}</div>`;
-    }).join('');
+    // 계정별 dot 표시
+    const hasMе  = items.some(i => i.acct === 'me');
+    const hasMom = items.some(i => i.acct === 'mom');
+    const dotsHtml = (hasMе || hasMom) ? `
+      <div class="day-dots">
+        ${hasMе  ? '<span class="day-dot dot-me"></span>'  : ''}
+        ${hasMom ? '<span class="day-dot dot-mom"></span>' : ''}
+      </div>` : '';
 
-    const more = items.length > 2
-      ? `<div class="day-more">+${items.length - 2}개 더</div>`
-      : '';
-
-    el.innerHTML = `<div class="day-num">${d}</div><div class="day-tags">${tags}${more}</div>`;
+    el.innerHTML = `<div class="day-num">${d}</div>${dotsHtml}`;
     el.addEventListener('click', () => selectDate(key));
     grid.appendChild(el);
   }
@@ -114,21 +128,11 @@ function renderCalendar() {
 
 function renderDetail() {
   const dateEl    = document.getElementById('detail-date');
-  const addBtn    = document.getElementById('add-btn');
   const listEl    = document.getElementById('items-list');
   const summaryEl = document.getElementById('summary-row');
 
-  if (!selectedDate) {
-    dateEl.textContent      = '날짜를 선택해주세요';
-    addBtn.style.display    = 'none';
-    listEl.innerHTML        = `<div class="empty-state"><span class="icon">📅</span>달력에서 날짜를 선택하세요</div>`;
-    summaryEl.style.display = 'none';
-    return;
-  }
-
   const [y, mo, d] = selectedDate.split('-');
-  dateEl.textContent   = `${y}년 ${parseInt(mo)}월 ${parseInt(d)}일`;
-  addBtn.style.display = 'flex';
+  dateEl.textContent = `${y}년 ${parseInt(mo)}월 ${parseInt(d)}일`;
 
   const items = data[selectedDate] || [];
 
@@ -158,21 +162,18 @@ function renderDetail() {
     </div>
   `).join('');
 
-  // 체크박스 이벤트
   listEl.querySelectorAll('.check-input').forEach(chk => {
     chk.addEventListener('change', () => {
       toggleDone(chk.dataset.key, parseInt(chk.dataset.idx), chk.checked);
     });
   });
 
-  // 삭제 버튼 이벤트
   listEl.querySelectorAll('.item-del').forEach(btn => {
     btn.addEventListener('click', () => {
       deleteItem(btn.dataset.key, parseInt(btn.dataset.idx));
     });
   });
 
-  // 미완료 항목만 합계 계산
   const activeItems = items.filter(i => !i.done);
   const total    = activeItems.reduce((s, i) => s + Number(i.price) * Number(i.qty), 0);
   const meTotal  = activeItems.filter(i => i.acct === 'me' ).reduce((s, i) => s + Number(i.price) * Number(i.qty), 0);
@@ -203,7 +204,9 @@ function renderDetail() {
 /* ── Actions ── */
 function selectDate(key) {
   selectedDate = key;
-  render();
+  renderCalendar();
+  renderDetail();
+  openSheet();
 }
 
 async function toggleDone(key, idx, done) {
