@@ -230,23 +230,23 @@ function openAddForm() {
 
   const overlay = document.createElement('div');
   overlay.className = 'form-overlay';
-  overlay.innerHTML = `
+    overlay.innerHTML = `
     <div class="form-card">
       <div class="form-title">픽업 항목 추가</div>
       <div class="form-row">
-        <label class="form-label" for="f-name">물건 이름 <span class="req">*</span></label>
+        <label class="form-label" for="f-name">물건 이름</label>
         <input type="text" id="f-name" placeholder="예: 세제, 과자 세트" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-qty">개수 <span class="req">*</span></label>
+        <label class="form-label" for="f-qty">개수</label>
         <input type="number" id="f-qty" placeholder="예: 2" min="1" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-price">금액 (원) <span class="req">*</span></label>
+        <label class="form-label" for="f-price">금액 (원)</label>
         <input type="number" id="f-price" placeholder="예: 15000" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-acct">예약 계정 <span class="req">*</span></label>
+        <label class="form-label" for="f-acct">예약 계정</label>
         <select id="f-acct">
           <option value="" disabled selected>계정을 선택하세요</option>
           <option value="me">내 계정</option>

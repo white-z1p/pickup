@@ -336,21 +336,25 @@ body {
 /* ── Form Overlay ── */
 .form-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.4);
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   z-index: 200;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .form-card {
   background: #fff;
-  border-radius: 14px;
-  border: 1px solid #ddd;
-  padding: 1.25rem;
-  width: 90%;
-  max-width: 320px;
+  border-radius: 20px 20px 0 0;
+  border: none;
+  padding: 1.5rem 1.25rem 2rem;
+  width: 100%;
+  max-width: 720px;
 }
 
 .form-title {
@@ -559,9 +563,4 @@ body {
   border-radius: 50%;
   display: inline-block;
   flex-shrink: 0;
-}
-/* ── 필수 항목 표시 ── */
-.req {
-  color: #D85A30;
-  font-size: 11px;
 }
