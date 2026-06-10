@@ -234,20 +234,21 @@ function openAddForm() {
     <div class="form-card">
       <div class="form-title">픽업 항목 추가</div>
       <div class="form-row">
-        <label class="form-label" for="f-name">물건 이름</label>
+        <label class="form-label" for="f-name">물건 이름 <span class="req">*</span></label>
         <input type="text" id="f-name" placeholder="예: 세제, 과자 세트" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-qty">개수</label>
-        <input type="number" id="f-qty" value="1" min="1" />
+        <label class="form-label" for="f-qty">개수 <span class="req">*</span></label>
+        <input type="number" id="f-qty" placeholder="예: 2" min="1" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-price">금액 (원)</label>
+        <label class="form-label" for="f-price">금액 (원) <span class="req">*</span></label>
         <input type="number" id="f-price" placeholder="예: 15000" />
       </div>
       <div class="form-row">
-        <label class="form-label" for="f-acct">예약 계정</label>
+        <label class="form-label" for="f-acct">예약 계정 <span class="req">*</span></label>
         <select id="f-acct">
+          <option value="" disabled selected>계정을 선택하세요</option>
           <option value="me">내 계정</option>
           <option value="mom">엄마 계정</option>
         </select>
@@ -265,11 +266,15 @@ function openAddForm() {
 
   document.getElementById('f-save').addEventListener('click', async () => {
     const name  = document.getElementById('f-name').value.trim();
-    const qty   = parseInt(document.getElementById('f-qty').value)   || 1;
-    const price = parseInt(document.getElementById('f-price').value) || 0;
+    const qty   = parseInt(document.getElementById('f-qty').value);
+    const price = parseInt(document.getElementById('f-price').value);
     const acct  = document.getElementById('f-acct').value;
 
-    if (!name) { document.getElementById('f-name').focus(); return; }
+    if (!name)        { document.getElementById('f-name').focus();  return; }
+    if (!qty || qty < 1) { document.getElementById('f-qty').focus();   return; }
+    if (!price && price !== 0) { document.getElementById('f-price').focus(); return; }
+    if (isNaN(price)) { document.getElementById('f-price').focus(); return; }
+    if (!acct)        { document.getElementById('f-acct').focus();  return; }
 
     const saveBtn = document.getElementById('f-save');
     saveBtn.textContent = '저장 중...';
