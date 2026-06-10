@@ -158,13 +158,22 @@ function renderDetail() {
           </span>
         </div>
       </div>
-      <button class="item-del" data-key="${selectedDate}" data-idx="${idx}" aria-label="삭제">🗑</button>
+      <div class="item-actions">
+        <button class="item-edit" data-key="${selectedDate}" data-idx="${idx}" aria-label="수정">수정</button>
+        <button class="item-del" data-key="${selectedDate}" data-idx="${idx}" aria-label="삭제">삭제</button>
+      </div>
     </div>
   `).join('');
 
   listEl.querySelectorAll('.check-input').forEach(chk => {
     chk.addEventListener('change', () => {
       toggleDone(chk.dataset.key, parseInt(chk.dataset.idx), chk.checked);
+    });
+  });
+
+  listEl.querySelectorAll('.item-edit').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openEditForm(btn.dataset.key, parseInt(btn.dataset.idx));
     });
   });
 
@@ -222,6 +231,102 @@ async function deleteItem(key, idx) {
   const updated = [...data[key]];
   updated.splice(idx, 1);
   await saveDate(key, updated);
+}
+
+async function updateItem(key, idx, updated) {
+  if (!data[key]) return;
+  const items = data[key].map((item, i) => i === idx ? { ...item, ...updated } : item);
+  await saveDate(key, items);
+}
+
+function openEditForm(key, idx) {
+  if (document.getElementById('inline-form')) return;
+
+  const item = data[key][idx];
+  if (!item) return;
+
+  const addBtn = document.getElementById('add-btn');
+  addBtn.style.display = 'none';
+
+  const formEl = document.createElement('div');
+  formEl.id = 'inline-form';
+  formEl.className = 'inline-form';
+  formEl.innerHTML = `
+    <div class="inline-form-title">항목 수정</div>
+    <div class="inline-form-field">
+      <label class="inline-form-label">물건 이름</label>
+      <input type="text" id="f-name" class="inline-form-input" value="${item.name}" />
+    </div>
+    <div class="inline-form-row">
+      <div class="inline-form-field">
+        <label class="inline-form-label">수량</label>
+        <input type="number" id="f-qty" class="inline-form-input" value="${item.qty}" min="1" />
+      </div>
+      <div class="inline-form-field">
+        <label class="inline-form-label">금액</label>
+        <div class="inline-form-input-wrap">
+          <input type="number" id="f-price" class="inline-form-input" value="${item.price}" />
+          <span class="inline-form-unit">원</span>
+        </div>
+      </div>
+    </div>
+    <div class="inline-form-field">
+      <label class="inline-form-label">계정</label>
+      <div class="acct-toggle">
+        <button type="button" class="acct-btn ${item.acct === 'me' ? 'active' : ''}" data-val="me">내 계정</button>
+        <button type="button" class="acct-btn ${item.acct === 'mom' ? 'active' : ''}" data-val="mom">엄마 계정</button>
+      </div>
+      <input type="hidden" id="f-acct" value="${item.acct}" />
+    </div>
+    <div class="inline-form-btns">
+      <button class="btn-cancel" id="f-cancel">취소</button>
+      <button class="btn-save" id="f-save"><span>수정 완료</span></button>
+    </div>
+  `;
+
+  const sheetInner = document.getElementById('detail-wrapper');
+  sheetInner.appendChild(formEl);
+
+  formEl.querySelectorAll('.acct-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      formEl.querySelectorAll('.acct-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('f-acct').value = btn.dataset.val;
+    });
+  });
+
+  document.getElementById('f-name').focus();
+
+  function closeForm() {
+    formEl.remove();
+    addBtn.style.display = 'flex';
+  }
+
+  document.getElementById('f-cancel').addEventListener('click', closeForm);
+
+  document.getElementById('f-save').addEventListener('click', async () => {
+    const name  = document.getElementById('f-name').value.trim();
+    const qty   = parseInt(document.getElementById('f-qty').value);
+    const price = parseInt(document.getElementById('f-price').value);
+    const acct  = document.getElementById('f-acct').value;
+
+    if (!name)           { document.getElementById('f-name').focus();  return; }
+    if (!qty || qty < 1) { document.getElementById('f-qty').focus();   return; }
+    if (isNaN(price))    { document.getElementById('f-price').focus(); return; }
+    if (!acct) {
+      formEl.querySelector('.acct-toggle').style.outline = '2px solid #D85A30';
+      formEl.querySelector('.acct-toggle').style.borderRadius = '10px';
+      setTimeout(() => { formEl.querySelector('.acct-toggle').style.outline = ''; }, 1500);
+      return;
+    }
+
+    const saveBtn = document.getElementById('f-save');
+    saveBtn.textContent = '저장 중...';
+    saveBtn.disabled = true;
+
+    await updateItem(key, idx, { name, qty, price, acct });
+    closeForm();
+  });
 }
 
 function openAddForm() {
