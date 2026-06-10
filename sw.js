@@ -1,4 +1,4 @@
-const CACHE = 'pickup-v1';
+const CACHE = 'pickup-v2';
 const ASSETS = ['./', './index.html', './style.css', './app.js', './pickup_icon.svg'];
 
 self.addEventListener('install', e => {
