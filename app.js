@@ -112,11 +112,11 @@ function renderCalendar() {
       el.classList.add('selected');
 
     // 계정별 dot 표시
-    const hasMе  = items.some(i => i.acct === 'me');
+    const hasMe  = items.some(i => i.acct === 'me');
     const hasMom = items.some(i => i.acct === 'mom');
-    const dotsHtml = (hasMе || hasMom) ? `
+    const dotsHtml = (hasMe || hasMom) ? `
       <div class="day-dots">
-        ${hasMе  ? '<span class="day-dot dot-me"></span>'  : ''}
+        ${hasMe  ? '<span class="day-dot dot-me"></span>'  : ''}
         ${hasMom ? '<span class="day-dot dot-mom"></span>' : ''}
       </div>` : '';
 
